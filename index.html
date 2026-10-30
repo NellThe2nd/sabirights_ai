@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SabiRights AI - Know Your Fundamental Rights</title>
     <meta name="theme-color" content="#008751">
-    <link rel="manifest" href="manifest.json">
+    <!-- Embedded Manifest with SabiRights branding -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"SabiRights AI","short_name":"SabiRights","start_url":".","display":"standalone","background_color":"#000000","theme_color":"#008751","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png"}]}'>
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -279,41 +280,26 @@
                     <h2 class="text-xl lg:text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
                         <i class="fa-solid fa-gear text-naija-600"></i> Settings & Preferences
                     </h2>
-                    <p class="text-xs lg:text-sm text-slate-500 dark:text-slate-400">Customize backend server proxy, API keys, and language defaults.</p>
+                    <p class="text-xs lg:text-sm text-slate-500 dark:text-slate-400">Customize language and regional constitutional defaults.</p>
                 </div>
 
-                <!-- Server Proxy Endpoint Config -->
-                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-6 shadow-sm space-y-3">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-server text-naija-600 text-lg"></i>
-                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Backend Server Endpoint</h3>
+                <!-- Live Constitutional Amendments Status Card -->
+                <div class="bg-gradient-to-r from-naija-700 to-emerald-900 rounded-2xl p-6 text-white shadow-lg space-y-3 border border-naija-600/30">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-white font-bold">
+                                <i class="fa-solid fa-satellite-dish text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-base">Live Constitutional Amendment Engine</h3>
+                                <p class="text-xs text-emerald-100">Powered by Gemini Search Grounding & Federal Gazette Feeds</p>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-500/30 border border-emerald-400/40 rounded-full text-[10px] font-bold uppercase tracking-wider">Active</span>
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Specify your Cloudflare Worker or Vercel Proxy URL to enable server-side Gemini API calls with Google Search Grounding.
+                    <p class="text-xs text-emerald-100 leading-relaxed">
+                        Whenever you ask a question, SabiRights AI performs a real-time web search check across official Nigerian National Assembly gazettes, Supreme Court rulings, and constitutional alterations to ensure your legal guidance reflects the latest amendments.
                     </p>
-                    <div class="flex gap-2 pt-2">
-                        <input type="text" id="proxy-url-input" placeholder="https://my-proxy.workers.dev/api/chat" class="flex-1 bg-slate-100 dark:bg-black border border-slate-200 dark:border-oled-border rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-naija-500 text-slate-800 dark:text-slate-100">
-                        <button onclick="saveProxyUrl()" class="bg-naija-600 hover:bg-naija-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-colors">
-                            Save Proxy
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Fallback API Key Input -->
-                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-6 shadow-sm space-y-3">
-                    <div class="flex items-center gap-3">
-                        <i class="fa-solid fa-key text-naija-600 text-lg"></i>
-                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Fallback Client-side API Key (Optional)</h3>
-                    </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        If no backend proxy is configured, enter your personal Gemini API key here.
-                    </p>
-                    <div class="flex gap-2 pt-2">
-                        <input type="password" id="gemini-api-key-input" placeholder="AIzaSy..." class="flex-1 bg-slate-100 dark:bg-black border border-slate-200 dark:border-oled-border rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-naija-500 text-slate-800 dark:text-slate-100">
-                        <button onclick="saveApiKey()" class="bg-naija-600 hover:bg-naija-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-colors">
-                            Save Key
-                        </button>
-                    </div>
                 </div>
 
                 <!-- Language Selection -->
@@ -442,32 +428,30 @@
         let sidebarCollapsed = false;
         let recentsHideTimeout = null;
 
-        function saveProxyUrl() {
-            const input = document.getElementById('proxy-url-input');
-            if (input && input.value.trim()) {
-                localStorage.setItem('naija_rights_proxy_url', input.value.trim());
-            }
-        }
+        // Hard-coded production serverless proxy URL (Deployed Cloudflare Worker Endpoint)
+        // Replace this URL string with your deployed worker URL once active.
+        const DEFAULT_PROXY_URL = "https://sabirights-api.workers.dev/api/chat";
 
         function getProxyUrl() {
-            return localStorage.getItem('naija_rights_proxy_url') || '';
+            return localStorage.getItem('naija_rights_proxy_url') || DEFAULT_PROXY_URL;
         }
 
-        function saveApiKey() {
-            const input = document.getElementById('gemini-api-key-input');
-            if (input && input.value.trim()) {
-                localStorage.setItem('naija_rights_gemini_key', input.value.trim());
-            }
+        // HTML Sanitizer & Markdown Parser
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
-        function getApiKey() {
-            return localStorage.getItem('naija_rights_gemini_key') || window.GEMINI_API_KEY || '';
-        }
-
-        // Lightweight Markdown Parser for rich response formatting
         function parseMarkdown(str) {
             if (!str) return '';
-            let html = str
+            // Escape HTML characters first to prevent XSS and unescaped tag breaking
+            let safeStr = escapeHtml(str);
+
+            let html = safeStr
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
                 .replace(/^### (.*$)/gim, '<h3 class="font-bold text-sm my-1 text-slate-900 dark:text-white">$1</h3>')
@@ -912,81 +896,81 @@
                     if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
                         return { text: data.candidates[0].content.parts[0].text, isError: false };
                     }
-                } catch (err) {
-                    return {
-                        text: `**Network Error:** Could not connect to backend server at \`${proxyUrl}\`. Please check your connection or endpoint setting.`,
-                        isError: true
-                    };
-                }
-            }
+        // Dynamic API Fetcher with Proxy Support & Explicit Error States
+        async function fetchAIResponse(userQuery, systemInstruction) {
+            const proxyUrl = getProxyUrl();
+            const q = userQuery.toLowerCase();
 
-            // Option 2: Call Gemini Direct with client API key
-            if (clientKey) {
+            // Attempt AI Server Connection
+            if (proxyUrl && navigator.onLine) {
                 try {
-                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${clientKey}`, {
+                    const res = await fetch(proxyUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: `${systemInstruction}\nUser Question: ${userQuery}` }] }]
-                        })
+                        body: JSON.stringify({ userQuery, systemInstruction })
                     });
                     const data = await res.json();
-                    
+
                     if (!res.ok || data.error) {
                         return {
-                            text: `**API Key Error:** ${data.error?.message || "Invalid or quota-exceeded Gemini API Key."}`,
+                            text: `**AI Service Error:** ${data.error?.message || data.error || "The AI server encountered an error processing your query."}`,
                             isError: true
                         };
                     }
 
-                    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                        return { text: data.candidates[0].content.parts[0].text, isError: false };
+                    const responseText = data.candidates && data.candidates[0]?.content?.parts[0]?.text;
+                    
+                    if (responseText && responseText.trim().length > 0) {
+                        return { text: responseText, isError: false };
+                    } else {
+                        // Response came back empty or blocked (e.g. safety filters)
+                        return {
+                            text: `**Response Blocked or Empty:** The AI model could not return a response for this query. Please rephrase your question.`,
+                            isError: true
+                        };
                     }
-                } catch (e) {
+                } catch (err) {
+                    // Network connection error
                     return {
-                        text: `**Connection Error:** Direct Gemini API request failed.`,
+                        text: `**Network Error:** Could not connect to the SabiRights AI server. Please check your internet connection and try again.`,
                         isError: true
                     };
                 }
             }
 
-            // Fallback Engine with Precise Context-Aware Routing (No generic single response)
+            // Offline Canned Fallback Engine (Strictly when completely offline)
             await new Promise(resolve => setTimeout(resolve, 600));
 
-            // Specific Phone Search / Device Search
             if (q.includes('phone') || q.includes('laptop') || q.includes('device') || q.includes('search my phone')) {
                 return {
-                    text: `Under **Section 37 of the 1999 Constitution of Nigeria** (Right to Private Life) and **Section 3(2) of the Nigeria Police Act 2020**:\n\n* **Phone Search Restrictions:** Police officers cannot randomly demand to unlock or search your mobile phone or laptop without a specific warrant or reasonable suspicion of a committed felony.\n* **Police Conduct:** Demanding money to inspect phone contents constitutes extortion under statutory discipline rules.`,
+                    text: `[Offline Mode] Under **Section 37 of the 1999 Constitution of Nigeria** (Right to Private Life) and **Section 3(2) of the Nigeria Police Act 2020**:\n\n* **Phone Search Restrictions:** Police officers cannot randomly demand to unlock or search your mobile phone or laptop without a specific warrant or reasonable suspicion of a committed felony.\n* **Police Conduct:** Demanding money to inspect phone contents constitutes extortion under statutory discipline rules.`,
                     isError: false
                 };
             }
 
-            // Specific Bail / Detention Rights
             if (q.includes('bail') || q.includes('station') || q.includes('detain') || q.includes('48 hours')) {
                 return {
-                    text: `Under **Section 35 of the 1999 Constitution** and **ACJA 2015 (Section 30)**:\n\n* **Bail is Free:** No money is statutorily required for police station bail.\n* **Time Limit:** A suspect must be brought before a court of law within 24 to 48 hours max.\n* **Right to Legal Counsel:** You have the right to remain silent until consulting a legal practitioner or legal aid representative.`,
+                    text: `[Offline Mode] Under **Section 35 of the 1999 Constitution** and **ACJA 2015 (Section 30)**:\n\n* **Bail is Free:** No money is statutorily required for police station bail.\n* **Time Limit:** A suspect must be brought before a court of law within 24 to 48 hours max.\n* **Right to Legal Counsel:** You have the right to remain silent until consulting a legal practitioner or legal aid representative.`,
                     isError: false
                 };
             }
 
-            // Specific Unlawful Arrest
             if (q.includes('arrest') || q.includes('warrant')) {
                 return {
-                    text: `Under **Section 35 of the 1999 CFRN** and **Section 8 of ACJA 2015**:\n\n* **No Arrest for Civil Wrongs:** You cannot be arrested for a civil debt or breach of contract.\n* **Notification:** An arresting officer must inform you of the reason for your arrest immediately.\n* **No Torture:** Section 34 guarantees dignity; physical assault during arrest is prohibited.`,
+                    text: `[Offline Mode] Under **Section 35 of the 1999 CFRN** and **Section 8 of ACJA 2015**:\n\n* **No Arrest for Civil Wrongs:** You cannot be arrested for a civil debt or breach of contract.\n* **Notification:** An arresting officer must inform you of the reason for your arrest immediately.\n* **No Torture:** Section 34 guarantees dignity; physical assault during arrest is prohibited.`,
                     isError: false
                 };
             }
 
-            // Tenant Eviction
             if (q.includes('tenant') || q.includes('landlord') || q.includes('evict') || q.includes('rent')) {
                 return {
-                    text: `Under Nigerian Property Laws and Section 43 of the 1999 Constitution:\n\n* **Due Process Required:** Landlords cannot forcefully eject tenants, lock premises, or remove roofs without a court order.\n* **Statutory Notices:** Landlords must issue a formal Quit Notice followed by a 7-day Notice of Owner's Intention to Apply to Court.`,
+                    text: `[Offline Mode] Under Nigerian Property Laws and Section 43 of the 1999 Constitution:\n\n* **Due Process Required:** Landlords cannot forcefully eject tenants, lock premises, or remove roofs without a court order.\n* **Statutory Notices:** Landlords must issue a formal Quit Notice followed by a 7-day Notice of Owner's Intention to Apply to Court.`,
                     isError: false
                 };
             }
 
             return {
-                text: `Based on Chapter IV of the 1999 Constitution of the Federal Republic of Nigeria:\n\n* **Fundamental Rights:** Citizens are entitled to Rights to Life (Sec 33), Dignity (Sec 34), Personal Liberty (Sec 35), Fair Hearing (Sec 36), and Private Life (Sec 37).\n* **Enforcement:** Section 46 empowers citizens to apply directly to the High Court in their state for enforcement.`,
+                text: `[Offline Mode] Based on Chapter IV of the 1999 Constitution of the Federal Republic of Nigeria:\n\n* **Fundamental Rights:** Citizens are entitled to Rights to Life (Sec 33), Dignity (Sec 34), Personal Liberty (Sec 35), Fair Hearing (Sec 36), and Private Life (Sec 37).\n* **Enforcement:** Section 46 empowers citizens to apply directly to the High Court in their state for enforcement.`,
                 isError: false
             };
         }
@@ -1119,16 +1103,6 @@
             renderRecentChatsList();
             renderSavedList();
             switchTab('chat');
-
-            const proxyInput = document.getElementById('proxy-url-input');
-            if (proxyInput && localStorage.getItem('naija_rights_proxy_url')) {
-                proxyInput.value = localStorage.getItem('naija_rights_proxy_url');
-            }
-
-            const keyInput = document.getElementById('gemini-api-key-input');
-            if (keyInput && localStorage.getItem('naija_rights_gemini_key')) {
-                keyInput.value = localStorage.getItem('naija_rights_gemini_key');
-            }
         };
 
         if ('serviceWorker' in navigator) {
