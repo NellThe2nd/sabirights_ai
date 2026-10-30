@@ -1,0 +1,19 @@
+{
+  "name": "NaijaRights AI: Know Your Rights",
+  "short_name": "NaijaRights",
+  "description": "Learn your fundamental rights under the 1999 Nigerian Constitution.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#008751",
+  "lang": "en-NG",
+  "categories": ["education", "reference"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

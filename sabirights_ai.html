@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SabiRights AI - Know Your Fundamental Rights</title>
+    <meta name="theme-color" content="#008751">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        naija: {
+                            50: '#e6f4ed',
+                            100: '#cce9db',
+                            500: '#008751',
+                            600: '#006d41',
+                            700: '#005231',
+                        },
+                        oled: {
+                            black: '#000000',
+                            card: '#0a0a0a',
+                            border: '#1a1a1a',
+                            hover: '#141414'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #262626;
+        }
+        .dark body, .dark main, .dark aside, .dark header {
+            background-color: #000000 !important;
+        }
+        .dark .bg-white {
+            background-color: #0a0a0a !important;
+        }
+        .dark .bg-slate-50 {
+            background-color: #000000 !important;
+        }
+        .dark .bg-slate-100 {
+            background-color: #121212 !important;
+        }
+        .dark .bg-slate-800 {
+            background-color: #0a0a0a !important;
+        }
+        .dark .bg-slate-900 {
+            background-color: #000000 !important;
+        }
+        .dark .border-slate-200, .dark .border-slate-700, .dark .border-slate-800 {
+            border-color: #1c1c1c !important;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-oled-black text-slate-800 dark:text-slate-100 font-sans transition-colors duration-200 flex flex-row overflow-hidden">
+
+    <!-- Compact Icon-Only Left Nav Sidebar -->
+    <aside class="w-16 bg-white dark:bg-oled-black border-r border-slate-200 dark:border-oled-border flex flex-col items-center py-4 justify-between shrink-0 z-30 shadow-sm">
+        <div class="flex flex-col items-center gap-6">
+            <div title="SabiRights AI" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-naija-600 to-emerald-400 flex items-center justify-center text-white font-bold shadow-md shadow-naija-500/20 cursor-pointer" onclick="switchTab('chat')">
+                <i class="fa-solid fa-scale-balanced text-lg"></i>
+            </div>
+
+            <nav class="flex flex-col items-center space-y-3">
+                <div class="relative group" onmouseenter="showRecentsSidebarHover()" onmouseleave="scheduleHideRecentsSidebar()">
+                    <button onclick="switchTab('chat')" id="nav-chat" title="AI Assistant" class="w-10 h-10 rounded-xl flex items-center justify-center text-base transition-all bg-naija-600 text-white shadow-md shadow-naija-600/30">
+                        <i class="fa-solid fa-comments"></i>
+                    </button>
+                </div>
+                
+                <button onclick="switchTab('explorer')" id="nav-explorer" title="Constitution Explorer" class="w-10 h-10 rounded-xl flex items-center justify-center text-base transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-oled-hover hover:text-slate-900 dark:hover:text-white">
+                    <i class="fa-solid fa-book-atlas"></i>
+                </button>
+
+                <button onclick="switchTab('sos')" id="nav-sos" title="Emergency SOS" class="w-10 h-10 rounded-xl flex items-center justify-center text-base transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-oled-hover hover:text-red-500">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500"></i>
+                </button>
+
+                <button onclick="switchTab('saved')" id="nav-saved" title="Saved Rights" class="w-10 h-10 rounded-xl flex items-center justify-center text-base transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-oled-hover hover:text-slate-900 dark:hover:text-white relative">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span id="saved-badge" class="absolute -top-1 -right-1 w-4 h-4 bg-naija-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+                </button>
+
+                <button onclick="switchTab('settings')" id="nav-settings" title="Settings & Language" class="w-10 h-10 rounded-xl flex items-center justify-center text-base transition-all text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-oled-hover hover:text-slate-900 dark:hover:text-white">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </nav>
+        </div>
+
+        <div class="flex flex-col items-center space-y-3">
+            <button onclick="switchTab('settings')" id="current-lang-badge" title="Switch Language" class="w-10 h-10 rounded-xl bg-naija-50 dark:bg-oled-hover border border-naija-200 dark:border-oled-border flex items-center justify-center text-base hover:scale-105 transition-transform">
+                <span id="lang-flag">🇳🇬</span>
+            </button>
+
+            <button onclick="toggleDarkMode()" title="Toggle Pitch Black Theme" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-oled-hover flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-hidden relative flex flex-col bg-slate-50 dark:bg-oled-black">
+
+        <!-- TAB 1: AI ASSISTANT -->
+        <div id="tab-chat" class="absolute inset-0 flex bg-slate-50 dark:bg-oled-black">
+            
+            <aside id="recents-sidebar" 
+                   onmouseenter="cancelHideRecentsSidebar()" 
+                   onmouseleave="scheduleHideRecentsSidebar()" 
+                   class="w-60 bg-white dark:bg-oled-card border-r border-slate-200 dark:border-oled-border flex flex-col shrink-0 transition-all duration-300">
+                <div class="p-3 border-b border-slate-100 dark:border-oled-border flex items-center justify-between">
+                    <button onclick="startNewChat()" class="flex-1 bg-naija-600 hover:bg-naija-700 text-white px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm">
+                        <i class="fa-solid fa-plus text-xs"></i> New Chat
+                    </button>
+                    <button onclick="toggleRecentsSidebar()" title="Toggle Sidebar" class="ml-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-lg">
+                        <i class="fa-solid fa-angles-left text-xs" id="recents-toggle-icon"></i>
+                    </button>
+                </div>
+
+                <div class="p-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                    <span>Recent Conversations</span>
+                    <button onclick="clearRecentChats()" title="Clear recents" class="text-slate-400 hover:text-red-500 transition-colors">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+
+                <div id="recents-list" class="flex-1 overflow-y-auto px-2 space-y-1"></div>
+            </aside>
+
+            <div class="flex-1 flex flex-col h-full overflow-hidden relative bg-slate-50 dark:bg-oled-black">
+                
+                <div class="p-3 bg-white dark:bg-oled-card border-b border-slate-200 dark:border-oled-border flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleRecentsSidebar()" id="recents-open-btn" class="hidden text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white p-1 rounded-lg">
+                            <i class="fa-solid fa-sidebar text-base"></i>
+                        </button>
+                        <span class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-2">
+                            SabiRights AI
+                            <span class="text-[10px] bg-naija-100 dark:bg-naija-900/60 text-naija-700 dark:text-naija-300 font-semibold px-2 py-0.5 rounded-full">1999 CFRN</span>
+                        </span>
+                    </div>
+                    <span id="header-lang-title" class="text-xs text-slate-400">English (Standard)</span>
+                </div>
+
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4 max-w-4xl mx-auto w-full">
+                    <div class="flex items-start">
+                        <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl rounded-tl-sm p-4 shadow-sm max-w-2xl">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-semibold text-xs text-naija-600 dark:text-naija-400">SabiRights AI</span>
+                                <span class="text-[10px] text-slate-400">Just now</span>
+                            </div>
+                            <p class="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                                Welcome! I am your AI constitutional rights companion. Ask me anything about police stops, unlawful arrest, employment rights, tenant eviction, or freedom of expression under the 1999 Nigerian Constitution.
+                            </p>
+                            <div class="mt-3 pt-3 border-t border-slate-100 dark:border-oled-border flex items-center text-[11px] text-slate-400 gap-1.5">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> General legal information only. Consult a lawyer for formal representation.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quick-prompts-wrapper" class="px-4 py-2 bg-white/80 dark:bg-oled-card/80 backdrop-blur border-t border-slate-200 dark:border-oled-border max-w-4xl mx-auto w-full transition-all duration-300">
+                    <p id="prompt-chips-label" class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Frequently Asked Scenarios:</p>
+                    <div id="quick-prompts-container" class="flex gap-2 overflow-x-auto pb-1 scrollbar-none"></div>
+                </div>
+
+                <div class="p-4 bg-white dark:bg-oled-card border-t border-slate-200 dark:border-oled-border shrink-0">
+                    <form id="chat-form" onsubmit="handleChatSubmit(event)" class="max-w-4xl mx-auto flex gap-2">
+                        <div class="relative flex-1">
+                            <input type="text" id="user-input" placeholder="Ask about police harassment, arrest, tenant rights, freedom of speech..." class="w-full bg-slate-100 dark:bg-black border border-slate-200 dark:border-oled-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-naija-500 text-slate-800 dark:text-slate-100">
+                        </div>
+                        <button type="submit" id="send-btn" class="bg-naija-600 hover:bg-naija-700 text-white px-5 py-3 rounded-xl font-semibold text-sm transition-all shadow-md shadow-naija-500/20 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CONSTITUTION EXPLORER -->
+        <div id="tab-explorer" class="absolute inset-0 hidden flex flex-col bg-slate-50 dark:bg-oled-black overflow-y-auto p-4 lg:p-8">
+            <div class="max-w-5xl mx-auto w-full space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-xl lg:text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                            <i class="fa-solid fa-book-open text-naija-600"></i> Constitution Explorer
+                        </h2>
+                        <p class="text-xs lg:text-sm text-slate-500 dark:text-slate-400">Chapter IV of the 1999 Constitution of the Federal Republic of Nigeria (Fundamental Rights)</p>
+                    </div>
+                    <div class="relative w-full md:w-72">
+                        <input type="text" id="explorer-search" oninput="filterExplorer()" placeholder="Search rights, section numbers..." class="w-full bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-naija-500 pl-9 text-slate-800 dark:text-white">
+                        <i class="fa-solid fa-search absolute left-3 top-3 text-slate-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <div id="explorer-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        <!-- TAB 3: EMERGENCY SOS -->
+        <div id="tab-sos" class="absolute inset-0 hidden flex flex-col bg-slate-50 dark:bg-oled-black overflow-y-auto p-4 lg:p-8">
+            <div class="max-w-4xl mx-auto w-full space-y-6">
+                <div class="bg-gradient-to-r from-red-600 to-rose-800 rounded-2xl p-6 text-white shadow-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold">Emergency & Legal SOS Guide</h2>
+                            <p class="text-xs text-red-100">What to do immediately if detained, harassed, or facing human rights abuses in Nigeria.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                        <div class="bg-white/10 backdrop-blur rounded-xl p-3 text-xs">
+                            <span class="font-bold block mb-1">1. Stay Calm & Polite</span>
+                            Do not argue aggressively or resist physical officers violently. Insist on your rights respectfully.
+                        </div>
+                        <div class="bg-white/10 backdrop-blur rounded-xl p-3 text-xs">
+                            <span class="font-bold block mb-1">2. Record or Witness</span>
+                            Under Section 39, recording public officials discharging duties is legal as long as it doesn't obstruct justice.
+                        </div>
+                        <div class="bg-white/10 backdrop-blur rounded-xl p-3 text-xs">
+                            <span class="font-bold block mb-1">3. Right to Counsel</span>
+                            You have the right to remain silent until you consult a legal practitioner (Section 36(6)).
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-3">Verified Legal Aid & Human Rights Hotlines</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="sos-contacts"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: SAVED RIGHTS -->
+        <div id="tab-saved" class="absolute inset-0 hidden flex flex-col bg-slate-50 dark:bg-oled-black overflow-y-auto p-4 lg:p-8">
+            <div class="max-w-4xl mx-auto w-full space-y-6">
+                <div>
+                    <h2 class="text-xl lg:text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                        <i class="fa-solid fa-bookmark text-naija-600"></i> Bookmarked Answers & Rights
+                    </h2>
+                    <p class="text-xs lg:text-sm text-slate-500 dark:text-slate-400">Quickly access answers and sections you saved for offline reference.</p>
+                </div>
+                <div id="saved-list" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- TAB 5: SETTINGS -->
+        <div id="tab-settings" class="absolute inset-0 hidden flex flex-col bg-slate-50 dark:bg-oled-black overflow-y-auto p-4 lg:p-8">
+            <div class="max-w-3xl mx-auto w-full space-y-6">
+                <div>
+                    <h2 class="text-xl lg:text-2xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                        <i class="fa-solid fa-gear text-naija-600"></i> Settings & Preferences
+                    </h2>
+                    <p class="text-xs lg:text-sm text-slate-500 dark:text-slate-400">Customize backend server proxy, API keys, and language defaults.</p>
+                </div>
+
+                <!-- Server Proxy Endpoint Config -->
+                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-6 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-server text-naija-600 text-lg"></i>
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Backend Server Endpoint</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Specify your Cloudflare Worker or Vercel Proxy URL to enable server-side Gemini API calls with Google Search Grounding.
+                    </p>
+                    <div class="flex gap-2 pt-2">
+                        <input type="text" id="proxy-url-input" placeholder="https://my-proxy.workers.dev/api/chat" class="flex-1 bg-slate-100 dark:bg-black border border-slate-200 dark:border-oled-border rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-naija-500 text-slate-800 dark:text-slate-100">
+                        <button onclick="saveProxyUrl()" class="bg-naija-600 hover:bg-naija-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-colors">
+                            Save Proxy
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Fallback API Key Input -->
+                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-6 shadow-sm space-y-3">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-key text-naija-600 text-lg"></i>
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Fallback Client-side API Key (Optional)</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        If no backend proxy is configured, enter your personal Gemini API key here.
+                    </p>
+                    <div class="flex gap-2 pt-2">
+                        <input type="password" id="gemini-api-key-input" placeholder="AIzaSy..." class="flex-1 bg-slate-100 dark:bg-black border border-slate-200 dark:border-oled-border rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-naija-500 text-slate-800 dark:text-slate-100">
+                        <button onclick="saveApiKey()" class="bg-naija-600 hover:bg-naija-700 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-colors">
+                            Save Key
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Language Selection -->
+                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-6 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-oled-border">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-naija-100 dark:bg-naija-900/60 text-naija-600 dark:text-naija-400 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-language text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-base text-slate-900 dark:text-white">Supported Major Language / Tribe</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Select your preferred language for AI prompts & explanations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="language-options-grid">
+                        <button onclick="selectLanguage('english')" id="lang-btn-english" class="flex items-center justify-between p-3.5 border rounded-xl transition-all text-left bg-naija-50/50 dark:bg-naija-900/20 border-naija-500 ring-2 ring-naija-500/20">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🇳🇬</span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-900 dark:text-white">English</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400">Standard Legal English</div>
+                                </div>
+                            </div>
+                            <i id="lang-check-english" class="fa-solid fa-circle-check text-naija-600"></i>
+                        </button>
+
+                        <button onclick="selectLanguage('pidgin')" id="lang-btn-pidgin" class="flex items-center justify-between p-3.5 border rounded-xl transition-all text-left border-slate-200 dark:border-oled-border hover:border-naija-400">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🗣️</span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-900 dark:text-white">Naija Pidgin</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400">Sabi Your Rights</div>
+                                </div>
+                            </div>
+                            <i id="lang-check-pidgin" class="fa-solid fa-circle-check text-naija-600 hidden"></i>
+                        </button>
+
+                        <button onclick="selectLanguage('hausa')" id="lang-btn-hausa" class="flex items-center justify-between p-3.5 border rounded-xl transition-all text-left border-slate-200 dark:border-oled-border hover:border-naija-400">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🕌</span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-900 dark:text-white">Hausa</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400">Ilimin Hakkokin Ku</div>
+                                </div>
+                            </div>
+                            <i id="lang-check-hausa" class="fa-solid fa-circle-check text-naija-600 hidden"></i>
+                        </button>
+
+                        <button onclick="selectLanguage('yoruba')" id="lang-btn-yoruba" class="flex items-center justify-between p-3.5 border rounded-xl transition-all text-left border-slate-200 dark:border-oled-border hover:border-naija-400">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">👑</span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-900 dark:text-white">Yorùbá</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400">Mọ Awọn Ẹtọ Rẹ</div>
+                                </div>
+                            </div>
+                            <i id="lang-check-yoruba" class="fa-solid fa-circle-check text-naija-600 hidden"></i>
+                        </button>
+
+                        <button onclick="selectLanguage('igbo')" id="lang-btn-igbo" class="flex items-center justify-between p-3.5 border rounded-xl transition-all text-left border-slate-200 dark:border-oled-border hover:border-naija-400">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-2xl">🦅</span>
+                                <div>
+                                    <div class="font-bold text-sm text-slate-900 dark:text-white">Asụsụ Igbo</div>
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400">Mụta Basara Ikike Gị</div>
+                                </div>
+                            </div>
+                            <i id="lang-check-igbo" class="fa-solid fa-circle-check text-naija-600 hidden"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Organization Contact Quick Modal -->
+    <div id="org-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-oled-border">
+                <div class="flex items-center gap-3">
+                    <div id="org-modal-icon" class="w-10 h-10 rounded-xl bg-naija-100 dark:bg-naija-900/60 text-naija-600 dark:text-naija-400 flex items-center justify-center text-lg font-bold">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <h3 id="org-modal-title" class="font-bold text-base text-slate-900 dark:text-white">National Human Rights Commission (NHRC)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Official Legal Support Desk</p>
+                    </div>
+                </div>
+                <button onclick="closeOrgModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-2 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <p id="org-modal-desc" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Federal agency investigating human rights abuses, unlawful detention, and police misconduct in Nigeria.
+            </p>
+
+            <div class="space-y-2 pt-2">
+                <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Direct Contact Channels:</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <a id="org-modal-phone-btn" href="tel:+2348006472642" class="bg-naija-600 hover:bg-naija-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm">
+                        <i class="fa-solid fa-phone"></i> Call Hotline
+                    </a>
+                    <a id="org-modal-email-btn" href="mailto:info@nhrc.gov.ng" class="bg-slate-100 dark:bg-oled-hover hover:bg-slate-200 text-slate-800 dark:text-slate-200 px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-colors">
+                        <i class="fa-solid fa-envelope"></i> Send Email
+                    </a>
+                </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeOrgModal()" class="px-4 py-2 bg-slate-100 dark:bg-oled-hover hover:bg-slate-200 text-xs font-medium rounded-xl text-slate-700 dark:text-slate-300 transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTab = 'chat';
+        let currentLanguage = localStorage.getItem('naija_rights_lang') || 'english';
+        let chatHistory = [];
+        let recentChats = JSON.parse(localStorage.getItem('naija_rights_recents') || '[]');
+        let savedItems = JSON.parse(localStorage.getItem('naija_rights_saved') || '[]');
+        let darkMode = localStorage.getItem('naija_rights_dark') === 'true';
+        let sidebarCollapsed = false;
+        let recentsHideTimeout = null;
+
+        function saveProxyUrl() {
+            const input = document.getElementById('proxy-url-input');
+            if (input && input.value.trim()) {
+                localStorage.setItem('naija_rights_proxy_url', input.value.trim());
+            }
+        }
+
+        function getProxyUrl() {
+            return localStorage.getItem('naija_rights_proxy_url') || '';
+        }
+
+        function saveApiKey() {
+            const input = document.getElementById('gemini-api-key-input');
+            if (input && input.value.trim()) {
+                localStorage.setItem('naija_rights_gemini_key', input.value.trim());
+            }
+        }
+
+        function getApiKey() {
+            return localStorage.getItem('naija_rights_gemini_key') || window.GEMINI_API_KEY || '';
+        }
+
+        // Lightweight Markdown Parser for rich response formatting
+        function parseMarkdown(str) {
+            if (!str) return '';
+            let html = str
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/^### (.*$)/gim, '<h3 class="font-bold text-sm my-1 text-slate-900 dark:text-white">$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2 class="font-bold text-base my-1 text-slate-900 dark:text-white">$1</h2>')
+                .replace(/^\* (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
+                .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
+                .replace(/\n/g, '<br>');
+            return html;
+        }
+
+        const constitutionSections = [
+            { section: "Section 33", title: "Right to Life", summary: "Every person has a right to life, and no one shall be deprived intentionally of his life, save in execution of the sentence of a court in respect of a criminal offence.", details: "Exceptions include self-defense, defense of property from unlawful violence, or suppressing a riot." },
+            { section: "Section 34", title: "Right to Dignity of Human Person", summary: "Every individual is entitled to respect for the dignity of his person. No person shall be subjected to torture or degrading treatment.", details: "Prohibits forced labor, slavery, and police brutality/torture." },
+            { section: "Section 35", title: "Right to Personal Liberty", summary: "Every person shall be entitled to his personal liberty and no person shall be deprived of such liberty except in accordance with a procedure permitted by law.", details: "Guarantees right to remain silent until consulting a lawyer, and right to be brought before a court within 24-48 hours." },
+            { section: "Section 36", title: "Right to Fair Hearing", summary: "A person shall be entitled to a fair hearing within a reasonable time by a court or other tribunal established by law.", details: "Presumption of innocence until proven guilty, right to an interpreter, and defense by a legal practitioner of choice." },
+            { section: "Section 37", title: "Right to Private and Family Life", summary: "The privacy of citizens, their homes, correspondence, telephone conversations and telegraphic communications is hereby guaranteed and protected.", details: "Protects smartphones, personal devices, and laptops from unauthorized search without a warrant." },
+            { section: "Section 38", title: "Right to Freedom of Thought, Conscience and Religion", summary: "Every person shall be entitled to freedom of thought, conscience and religion.", details: "Includes freedom to change religion or belief and freedom to manifest and propagate it in worship." },
+            { section: "Section 39", title: "Right to Freedom of Expression and Press", summary: "Every person shall be entitled to freedom of expression, including freedom to hold opinions and to receive and impart ideas.", details: "Guarantees freedom of speech, journalistic reporting, and peaceful public commentary." },
+            { section: "Section 40", title: "Right to Peaceful Assembly and Association", summary: "Every person shall be entitled to assemble freely and associate with other persons.", details: "Protects peaceful protest, political party membership, and trade union formation." },
+            { section: "Section 41", title: "Right to Freedom of Movement", summary: "Every citizen of Nigeria is entitled to move freely throughout Nigeria and to reside in any part thereof.", details: "No citizen shall be expelled from Nigeria or refused entry or exit except by law." },
+            { section: "Section 42", title: "Right to Freedom from Discrimination", summary: "No citizen of Nigeria shall be subjected to disability or restriction based on community, ethnic group, place of origin, sex, religion, or political opinion.", details: "Guarantees equal treatment under Nigerian statutory law." },
+            { section: "Section 43", title: "Right to Acquire and Own Immovable Property", summary: "Subject to the provisions of this Constitution, every citizen of Nigeria shall have the right to acquire and own immovable property anywhere in Nigeria.", details: "Protects land and home ownership across all 36 states." },
+            { section: "Section 46", title: "Enforcement of Fundamental Rights", summary: "Any person who alleges that any of the provisions of Chapter IV has been, is being or likely to be infringed may apply to a High Court in that State for redress.", details: "Grants High Courts special jurisdiction to issue writs and orders to enforce rights." }
+        ];
+
+        const sosContactsData = [
+            { name: "National Human Rights Commission (NHRC)", phone: "+2348006472642", email: "info@nhrc.gov.ng", desc: "Federal agency investigating human rights abuses, unlawful detention, and police misconduct." },
+            { name: "Police Complaint Response Unit (CRU)", phone: "+2348057000001", email: "cru@npf.gov.ng", desc: "Official Nigeria Police internal discipline unit for reporting officer extortion or abuse." },
+            { name: "Legal Aid Council of Nigeria (LACON)", phone: "+2348005342524", email: "info@legalaidcouncil.gov.ng", desc: "Provides free legal representation and advice to indigent Nigerians." }
+        ];
+
+        const languageConfigs = {
+            english: {
+                flag: "🇳🇬",
+                title: "English (Standard)",
+                placeholder: "Ask about police stops, arrest, tenant rights, freedom of speech...",
+                label: "Frequently Asked Scenarios:",
+                systemInstruction: "You are SabiRights AI, a legal assistant for Nigerian citizens. Explain rights under the 1999 CFRN, Police Act 2020, and ACJA 2015 clearly.",
+                chips: [
+                    "Can police search my phone without a warrant?",
+                    "What are my rights if I am arrested by police?",
+                    "Can a landlord lock my house without notice?",
+                    "Is peaceful protest legal in Nigeria?"
+                ]
+            },
+            pidgin: {
+                flag: "🗣️",
+                title: "Naija Pidgin",
+                placeholder: "Ask about police stop, unlawful arrest, house rent palava...",
+                label: "Toris Wey People Dey Quickly Ask:",
+                systemInstruction: "Respond in authentic Nigerian Pidgin while citing 1999 Constitution sections clearly.",
+                chips: [
+                    "Police fit check my phone without warrant?",
+                    "Wetin be my right if police hold me?",
+                    "Landlord fit throw my load comot without notice?",
+                    "Peaceful protest dey legal for Naija?"
+                ]
+            },
+            hausa: {
+                flag: "🕌",
+                title: "Hausa",
+                placeholder: "Tambayi game da 'yan sanda, kamawa, haƙƙin haya...",
+                label: "Tambayoyin da aka fi yi:",
+                systemInstruction: "Respond in Hausa citing appropriate sections of Chapter IV 1999 CFRN.",
+                chips: [
+                    "Shin yan sanda za su iya duba wayata ba tare da sammaci ba?",
+                    "Mene ne hakki na idan an kama ni?",
+                    "Shin mai gida zai iya kulle gidana ba tare da sanarwa ba?",
+                    "Shin zanga-zanga ta lumana tana da halal a Najeriya?"
+                ]
+            },
+            yoruba: {
+                flag: "👑",
+                title: "Yorùbá",
+                placeholder: "Bèèrè nípa ọlọ́pàá, ìmúni, ẹ̀tọ́ onílé...",
+                label: "Àwọn Ìbéèrè ti Awọn Eeyan Mọọ Ṣe:",
+                systemInstruction: "Respond in Yorùbá while citing 1999 CFRN legal sections accurately.",
+                chips: [
+                    "Ṣé ọlọ́pàá le yẹ fóònù mi wò láìsí ìwé àṣẹ?",
+                    "Kí ni ẹ̀tọ́ mi tí ọlọ́pàá bá mú mi?",
+                    "Ṣé onílé le ti ilé mi láìsí àkókò ìfilọ̀?",
+                    "Ṣé ìfihan agbára pẹ̀lú àlàáfíà bófin mu ní Nàìjíríà?"
+                ]
+            },
+            igbo: {
+                flag: "🦅",
+                title: "Asụsụ Igbo",
+                placeholder: "Jụọ maka ndị uwe ojii, njide, ikike onye nwe ụlọ...",
+                label: "Ajụjụ Ndị A Na-ajụ Mgbe Niile:",
+                systemInstruction: "Respond in Igbo while citing relevant 1999 Nigerian Constitution sections.",
+                chips: [
+                    "Ndị uwe ojii ha nwere ike ile ekwentị m na-enweghị akwụkwọ ikike?",
+                    "Gịnị bụ ikike m ma ọ bụrụ na ndị uwe ojii ejide m?",
+                    "Onye nwe ụlọ m ọ nwere ike mechie ụlọ m na-enweghị ọkwa?",
+                    "Nganga udo ọ dị mma na Nigeria?"
+                ]
+            }
+        };
+
+        function switchTab(tabId) {
+            currentTab = tabId;
+            ['chat', 'explorer', 'sos', 'saved', 'settings'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const btn = document.getElementById(`nav-${t}`);
+                if (el) el.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('bg-naija-600', 'text-white', 'shadow-md', 'shadow-naija-600/30');
+                    btn.classList.add('text-slate-500', 'dark:text-slate-400');
+                }
+            });
+
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeTab) activeTab.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.add('bg-naija-600', 'text-white', 'shadow-md', 'shadow-naija-600/30');
+                activeBtn.classList.remove('text-slate-500', 'dark:text-slate-400');
+            }
+
+            if (tabId === 'explorer') renderExplorerGrid();
+            if (tabId === 'sos') renderSOSContacts();
+            if (tabId === 'saved') renderSavedList();
+        }
+
+        function selectLanguage(langKey) {
+            currentLanguage = langKey;
+            localStorage.setItem('naija_rights_lang', langKey);
+
+            const config = languageConfigs[langKey] || languageConfigs.english;
+
+            document.getElementById('lang-flag').textContent = config.flag;
+            document.getElementById('header-lang-title').textContent = config.title;
+            document.getElementById('user-input').placeholder = config.placeholder;
+            document.getElementById('prompt-chips-label').textContent = config.label;
+
+            Object.keys(languageConfigs).forEach(key => {
+                const btn = document.getElementById(`lang-btn-${key}`);
+                const check = document.getElementById(`lang-check-${key}`);
+                if (btn && check) {
+                    if (key === langKey) {
+                        btn.className = "flex items-center justify-between p-3.5 border rounded-xl transition-all text-left bg-naija-50/50 dark:bg-naija-900/20 border-naija-500 ring-2 ring-naija-500/20";
+                        check.classList.remove('hidden');
+                    } else {
+                        btn.className = "flex items-center justify-between p-3.5 border rounded-xl transition-all text-left border-slate-200 dark:border-oled-border hover:border-naija-400";
+                        check.classList.add('hidden');
+                    }
+                }
+            });
+
+            renderPromptChips(config.chips);
+        }
+
+        function renderPromptChips(chips) {
+            const container = document.getElementById('quick-prompts-container');
+            if (!container) return;
+
+            container.innerHTML = chips.map(chip => `
+                <button onclick="usePromptChip('${chip.replace(/'/g, "\\'")}')" class="whitespace-nowrap px-3 py-1.5 bg-slate-100 dark:bg-oled-hover hover:bg-naija-50 dark:hover:bg-naija-900/40 hover:text-naija-600 text-xs text-slate-700 dark:text-slate-300 rounded-lg transition-colors shrink-0">
+                    ${chip}
+                </button>
+            `).join('');
+        }
+
+        function toggleDarkMode() {
+            darkMode = !darkMode;
+            localStorage.setItem('naija_rights_dark', darkMode);
+            applyTheme();
+        }
+
+        function applyTheme() {
+            if (darkMode) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function clearRecentChats() {
+            recentChats = [];
+            localStorage.removeItem('naija_rights_recents');
+            renderRecentChatsList();
+        }
+
+        function deleteRecentChat(event, idx) {
+            event.stopPropagation();
+            recentChats.splice(idx, 1);
+            localStorage.setItem('naija_rights_recents', JSON.stringify(recentChats));
+            renderRecentChatsList();
+        }
+
+        function showRecentsSidebarHover() {
+            if (currentTab !== 'chat') switchTab('chat');
+            cancelHideRecentsSidebar();
+            const sidebar = document.getElementById('recents-sidebar');
+            const openBtn = document.getElementById('recents-open-btn');
+            sidebarCollapsed = false;
+            sidebar.classList.remove('-ml-60');
+            openBtn.classList.add('hidden');
+        }
+
+        function scheduleHideRecentsSidebar() {
+            recentsHideTimeout = setTimeout(() => {
+                const sidebar = document.getElementById('recents-sidebar');
+                const openBtn = document.getElementById('recents-open-btn');
+                sidebarCollapsed = true;
+                sidebar.classList.add('-ml-60');
+                openBtn.classList.remove('hidden');
+            }, 300);
+        }
+
+        function cancelHideRecentsSidebar() {
+            if (recentsHideTimeout) {
+                clearTimeout(recentsHideTimeout);
+                recentsHideTimeout = null;
+            }
+        }
+
+        function toggleRecentsSidebar() {
+            cancelHideRecentsSidebar();
+            const sidebar = document.getElementById('recents-sidebar');
+            const openBtn = document.getElementById('recents-open-btn');
+            sidebarCollapsed = !sidebarCollapsed;
+
+            if (sidebarCollapsed) {
+                sidebar.classList.add('-ml-60');
+                openBtn.classList.remove('hidden');
+            } else {
+                sidebar.classList.remove('-ml-60');
+                openBtn.classList.add('hidden');
+            }
+        }
+
+        function renderRecentChatsList() {
+            const list = document.getElementById('recents-list');
+            if (!list) return;
+
+            if (recentChats.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-6 px-2 text-xs text-slate-400">
+                        <i class="fa-solid fa-clock-rotate-left mb-1 text-base block"></i>
+                        No recent chats yet
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = recentChats.map((chat, idx) => `
+                <button onclick="loadRecentChat(${idx})" class="w-full text-left p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-oled-hover transition-colors group flex items-start justify-between">
+                    <div class="truncate flex-1 pr-2">
+                        <div class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">${chat.title}</div>
+                        <div class="text-[10px] text-slate-400 truncate">${chat.time}</div>
+                    </div>
+                    <button onclick="deleteRecentChat(event, ${idx})" class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 p-1 text-xs transition-opacity">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </button>
+            `).join('');
+        }
+
+        function startNewChat() {
+            chatHistory = [];
+            const chipsWrapper = document.getElementById('quick-prompts-wrapper');
+            if (chipsWrapper) chipsWrapper.classList.remove('hidden');
+
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = `
+                <div class="flex items-start">
+                    <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl rounded-tl-sm p-4 shadow-sm max-w-2xl">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-xs text-naija-600 dark:text-naija-400">SabiRights AI</span>
+                            <span class="text-[10px] text-slate-400">Just now</span>
+                        </div>
+                        <p class="text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                            Welcome! I am your AI constitutional rights companion. Ask me anything about police stops, unlawful arrest, employment rights, tenant eviction, or freedom of expression under the 1999 Nigerian Constitution.
+                        </p>
+                        <div class="mt-3 pt-3 border-t border-slate-100 dark:border-oled-border flex items-center text-[11px] text-slate-400 gap-1.5">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i> General legal information only. Consult a lawyer for formal representation.
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadRecentChat(idx) {
+            const chat = recentChats[idx];
+            if (!chat) return;
+            chatHistory = chat.messages || [];
+            
+            const chipsWrapper = document.getElementById('quick-prompts-wrapper');
+            if (chipsWrapper) chipsWrapper.classList.add('hidden');
+
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+            
+            chatHistory.forEach(msg => {
+                appendChatMessage(msg.role, msg.text, msg.time, false, msg.isError);
+            });
+        }
+
+        function usePromptChip(text) {
+            document.getElementById('user-input').value = text;
+            handleChatSubmit(new Event('submit'));
+        }
+
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('user-input');
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            const chipsWrapper = document.getElementById('quick-prompts-wrapper');
+            if (chipsWrapper) chipsWrapper.classList.add('hidden');
+
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            appendChatMessage('user', userMsg, timeStr, true);
+            input.value = '';
+
+            const typingId = showTypingIndicator();
+
+            try {
+                const config = languageConfigs[currentLanguage] || languageConfigs.english;
+                const result = await fetchAIResponse(userMsg, config.systemInstruction);
+                
+                removeTypingIndicator(typingId);
+                appendChatMessage('ai', result.text, timeStr, true, result.isError);
+
+                if (!result.isError && chatHistory.length <= 2) {
+                    recentChats.unshift({
+                        title: userMsg,
+                        time: timeStr,
+                        messages: [...chatHistory]
+                    });
+                    if (recentChats.length > 15) recentChats.pop();
+                    localStorage.setItem('naija_rights_recents', JSON.stringify(recentChats));
+                    renderRecentChatsList();
+                }
+
+            } catch (err) {
+                removeTypingIndicator(typingId);
+                appendChatMessage('ai', "Error connecting to AI service. Please check network connection.", timeStr, true, true);
+            }
+        }
+
+        function appendChatMessage(role, text, time, saveToHistory = true, isError = false) {
+            const container = document.getElementById('chat-messages');
+            if (saveToHistory) {
+                chatHistory.push({ role, text, time, isError });
+            }
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = role === 'user' ? 'flex justify-end' : 'flex items-start';
+
+            const formattedText = parseMarkdown(text);
+
+            if (role === 'user') {
+                msgDiv.innerHTML = `
+                    <div class="bg-naija-600 text-white rounded-2xl rounded-tr-sm p-4 shadow-sm max-w-xl">
+                        <div class="flex items-center justify-between mb-1 gap-4">
+                            <span class="font-semibold text-xs opacity-80">You</span>
+                            <span class="text-[10px] opacity-70">${time}</span>
+                        </div>
+                        <p class="text-sm leading-relaxed">${formattedText}</p>
+                    </div>
+                `;
+            } else {
+                const borderClass = isError ? 'border-red-300 dark:border-red-900/50' : 'border-slate-200 dark:border-oled-border';
+                const headerColor = isError ? 'text-red-500' : 'text-naija-600 dark:text-naija-400';
+
+                msgDiv.innerHTML = `
+                    <div class="bg-white dark:bg-oled-card border ${borderClass} rounded-2xl rounded-tl-sm p-4 shadow-sm max-w-2xl">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-semibold text-xs ${headerColor}">SabiRights AI</span>
+                            <span class="text-[10px] text-slate-400">${time}</span>
+                        </div>
+                        <div class="text-sm leading-relaxed text-slate-700 dark:text-slate-200 space-y-2">
+                            ${formattedText}
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-slate-100 dark:border-oled-border flex items-center justify-between text-xs text-slate-400">
+                            <span class="flex items-center gap-1.5 text-[11px]"><i class="fa-solid fa-triangle-exclamation text-amber-500"></i> General legal information only</span>
+                            ${!isError ? `
+                            <button onclick="bookmarkResponse('${encodeURIComponent(text)}')" class="hover:text-naija-600 transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-bookmark"></i> Save
+                            </button>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const container = document.getElementById('chat-messages');
+            const id = 'typing-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'flex items-start';
+            div.innerHTML = `
+                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-4 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-naija-500 animate-bounce"></div>
+                        <div class="w-2 h-2 rounded-full bg-naija-500 animate-bounce [animation-delay:0.2s]"></div>
+                        <div class="w-2 h-2 rounded-full bg-naija-500 animate-bounce [animation-delay:0.4s]"></div>
+                        <span class="text-xs text-slate-400 ml-2">Consulting Nigerian statutory references...</span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function removeTypingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // Dynamic API Fetcher with Proxy Support & Precise Routing
+        async function fetchAIResponse(userQuery, systemInstruction) {
+            const proxyUrl = getProxyUrl();
+            const clientKey = getApiKey();
+            const q = userQuery.toLowerCase();
+
+            // Option 1: Call Backend Proxy Server (Recommended for production)
+            if (proxyUrl) {
+                try {
+                    const res = await fetch(proxyUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userQuery, systemInstruction })
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok || data.error) {
+                        return {
+                            text: `**AI Service Unavailable:** ${data.error || "Failed to reach AI proxy server."}`,
+                            isError: true
+                        };
+                    }
+
+                    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                        return { text: data.candidates[0].content.parts[0].text, isError: false };
+                    }
+                } catch (err) {
+                    return {
+                        text: `**Network Error:** Could not connect to backend server at \`${proxyUrl}\`. Please check your connection or endpoint setting.`,
+                        isError: true
+                    };
+                }
+            }
+
+            // Option 2: Call Gemini Direct with client API key
+            if (clientKey) {
+                try {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${clientKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: `${systemInstruction}\nUser Question: ${userQuery}` }] }]
+                        })
+                    });
+                    const data = await res.json();
+                    
+                    if (!res.ok || data.error) {
+                        return {
+                            text: `**API Key Error:** ${data.error?.message || "Invalid or quota-exceeded Gemini API Key."}`,
+                            isError: true
+                        };
+                    }
+
+                    if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                        return { text: data.candidates[0].content.parts[0].text, isError: false };
+                    }
+                } catch (e) {
+                    return {
+                        text: `**Connection Error:** Direct Gemini API request failed.`,
+                        isError: true
+                    };
+                }
+            }
+
+            // Fallback Engine with Precise Context-Aware Routing (No generic single response)
+            await new Promise(resolve => setTimeout(resolve, 600));
+
+            // Specific Phone Search / Device Search
+            if (q.includes('phone') || q.includes('laptop') || q.includes('device') || q.includes('search my phone')) {
+                return {
+                    text: `Under **Section 37 of the 1999 Constitution of Nigeria** (Right to Private Life) and **Section 3(2) of the Nigeria Police Act 2020**:\n\n* **Phone Search Restrictions:** Police officers cannot randomly demand to unlock or search your mobile phone or laptop without a specific warrant or reasonable suspicion of a committed felony.\n* **Police Conduct:** Demanding money to inspect phone contents constitutes extortion under statutory discipline rules.`,
+                    isError: false
+                };
+            }
+
+            // Specific Bail / Detention Rights
+            if (q.includes('bail') || q.includes('station') || q.includes('detain') || q.includes('48 hours')) {
+                return {
+                    text: `Under **Section 35 of the 1999 Constitution** and **ACJA 2015 (Section 30)**:\n\n* **Bail is Free:** No money is statutorily required for police station bail.\n* **Time Limit:** A suspect must be brought before a court of law within 24 to 48 hours max.\n* **Right to Legal Counsel:** You have the right to remain silent until consulting a legal practitioner or legal aid representative.`,
+                    isError: false
+                };
+            }
+
+            // Specific Unlawful Arrest
+            if (q.includes('arrest') || q.includes('warrant')) {
+                return {
+                    text: `Under **Section 35 of the 1999 CFRN** and **Section 8 of ACJA 2015**:\n\n* **No Arrest for Civil Wrongs:** You cannot be arrested for a civil debt or breach of contract.\n* **Notification:** An arresting officer must inform you of the reason for your arrest immediately.\n* **No Torture:** Section 34 guarantees dignity; physical assault during arrest is prohibited.`,
+                    isError: false
+                };
+            }
+
+            // Tenant Eviction
+            if (q.includes('tenant') || q.includes('landlord') || q.includes('evict') || q.includes('rent')) {
+                return {
+                    text: `Under Nigerian Property Laws and Section 43 of the 1999 Constitution:\n\n* **Due Process Required:** Landlords cannot forcefully eject tenants, lock premises, or remove roofs without a court order.\n* **Statutory Notices:** Landlords must issue a formal Quit Notice followed by a 7-day Notice of Owner's Intention to Apply to Court.`,
+                    isError: false
+                };
+            }
+
+            return {
+                text: `Based on Chapter IV of the 1999 Constitution of the Federal Republic of Nigeria:\n\n* **Fundamental Rights:** Citizens are entitled to Rights to Life (Sec 33), Dignity (Sec 34), Personal Liberty (Sec 35), Fair Hearing (Sec 36), and Private Life (Sec 37).\n* **Enforcement:** Section 46 empowers citizens to apply directly to the High Court in their state for enforcement.`,
+                isError: false
+            };
+        }
+
+        function renderExplorerGrid() {
+            const grid = document.getElementById('explorer-grid');
+            if (!grid) return;
+
+            grid.innerHTML = constitutionSections.map(sec => `
+                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-5 shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-naija-600 dark:text-naija-400 bg-naija-50 dark:bg-naija-900/60 px-2.5 py-1 rounded-lg">${sec.section}</span>
+                        <button onclick="bookmarkSection('${sec.section}', '${sec.title}', '${sec.summary.replace(/'/g, "\\'")}')" class="text-slate-400 hover:text-naija-600 transition-colors">
+                            <i class="fa-solid fa-bookmark"></i>
+                        </button>
+                    </div>
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white">${sec.title}</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${sec.summary}</p>
+                    <div class="pt-2 border-t border-slate-100 dark:border-oled-border text-[11px] text-slate-500 dark:text-slate-400">
+                        ${sec.details}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterExplorer() {
+            const query = document.getElementById('explorer-search').value.toLowerCase();
+            const cards = document.querySelectorAll('#explorer-grid > div');
+
+            constitutionSections.forEach((sec, idx) => {
+                const match = sec.section.toLowerCase().includes(query) || 
+                              sec.title.toLowerCase().includes(query) || 
+                              sec.summary.toLowerCase().includes(query);
+                if (cards[idx]) {
+                    cards[idx].style.display = match ? 'block' : 'none';
+                }
+            });
+        }
+
+        function renderSOSContacts() {
+            const container = document.getElementById('sos-contacts');
+            if (!container) return;
+
+            container.innerHTML = sosContactsData.map(c => `
+                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-5 shadow-sm space-y-3">
+                    <h4 class="font-bold text-sm text-slate-900 dark:text-white">${c.name}</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${c.desc}</p>
+                    <div class="flex gap-2 pt-1">
+                        <a href="tel:${c.phone}" class="flex-1 bg-naija-600 hover:bg-naija-700 text-white py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-phone"></i> Call
+                        </a>
+                        <a href="mailto:${c.email}" class="flex-1 bg-slate-100 dark:bg-oled-hover hover:bg-slate-200 text-slate-800 dark:text-slate-200 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors">
+                            <i class="fa-solid fa-envelope"></i> Email
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function bookmarkResponse(text) {
+            const decoded = decodeURIComponent(text);
+            savedItems.unshift({
+                id: Date.now(),
+                title: decoded.slice(0, 40) + '...',
+                content: decoded,
+                date: new Date().toLocaleDateString()
+            });
+            localStorage.setItem('naija_rights_saved', JSON.stringify(savedItems));
+            renderSavedList();
+        }
+
+        function bookmarkSection(section, title, summary) {
+            savedItems.unshift({
+                id: Date.now(),
+                title: `${section}: ${title}`,
+                content: summary,
+                date: new Date().toLocaleDateString()
+            });
+            localStorage.setItem('naija_rights_saved', JSON.stringify(savedItems));
+            renderSavedList();
+        }
+
+        function renderSavedList() {
+            const countEl = document.getElementById('saved-badge');
+            if (countEl) countEl.textContent = savedItems.length;
+
+            const list = document.getElementById('saved-list');
+            if (!list) return;
+
+            if (savedItems.length === 0) {
+                list.innerHTML = `
+                    <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-8 text-center text-slate-400">
+                        <i class="fa-solid fa-bookmark text-2xl mb-2 block"></i>
+                        <p class="text-sm">No saved bookmarks yet.</p>
+                        <p class="text-xs text-slate-500">Save AI responses or constitution sections to read offline.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = savedItems.map((item, idx) => `
+                <div class="bg-white dark:bg-oled-card border border-slate-200 dark:border-oled-border rounded-2xl p-5 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-bold text-sm text-slate-900 dark:text-white">${item.title}</h4>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] text-slate-400">${item.date}</span>
+                            <button onclick="deleteSavedItem(${idx})" class="text-slate-400 hover:text-red-500 text-xs transition-colors">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${item.content}</p>
+                </div>
+            `).join('');
+        }
+
+        function deleteSavedItem(idx) {
+            savedItems.splice(idx, 1);
+            localStorage.setItem('naija_rights_saved', JSON.stringify(savedItems));
+            renderSavedList();
+        }
+
+        function closeOrgModal() {
+            document.getElementById('org-modal').classList.add('hidden');
+        }
+
+        window.onload = function() {
+            applyTheme();
+            selectLanguage(currentLanguage);
+            renderRecentChatsList();
+            renderSavedList();
+            switchTab('chat');
+
+            const proxyInput = document.getElementById('proxy-url-input');
+            if (proxyInput && localStorage.getItem('naija_rights_proxy_url')) {
+                proxyInput.value = localStorage.getItem('naija_rights_proxy_url');
+            }
+
+            const keyInput = document.getElementById('gemini-api-key-input');
+            if (keyInput && localStorage.getItem('naija_rights_gemini_key')) {
+                keyInput.value = localStorage.getItem('naija_rights_gemini_key');
+            }
+        };
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>
